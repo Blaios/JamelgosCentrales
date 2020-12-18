@@ -1,33 +1,55 @@
 package dummy.tracker;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
+import android.util.Log;
 import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final int PERMISSION_REQUEST_CODE = 1;
+    private BluetoothAdapter mBluetoothAdapter;
+    Button Scan;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.BLUETOOTH},1);
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.BLUETOOTH_ADMIN},1);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+            }
+        });
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Scan = findViewById(R.id.button);
+        Scan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBluetoothAdapter.startDiscovery();
+                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                for (BluetoothDevice device : pairedDevices) {
+                    Log.i("Device", device.getAddress());
+
+                }
             }
         });
     }
