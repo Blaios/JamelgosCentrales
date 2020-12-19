@@ -28,6 +28,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="listDevices" />
+
+        <Button
+            android:id="@+id/insert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="insert devices" />
     </LinearLayout>
 
 </FrameLayout>
