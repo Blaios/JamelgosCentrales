@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.View;
 import android.widget.Button;
 
 import com.polidea.rxandroidble2.RxBleDevice;
@@ -21,10 +22,14 @@ import dummy.tracker.bluetooth.BTInit;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Intent backgroundService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_main_page);
+
+        backgroundService = new Intent(this, SyncList.class);
 
         Button activateBT = findViewById(R.id.activateBT);
         activateBT.setOnClickListener(v -> {
@@ -50,5 +55,20 @@ public class MainActivity extends AppCompatActivity {
                 localDB.insert(db, d.getMacAddress(), new SimpleDateFormat("yyyy/MM/dd").format(newDate));
             }
         });
+
+        Button alarm = findViewById(R.id.alarm);
+        alarm.setOnClickListener(v -> {
+            startService(backgroundService);
+        }
+        );
+
+        Button stop = findViewById(R.id.stop);
+        stop.setOnClickListener(v -> stopService(backgroundService));
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(backgroundService);
+        super.onDestroy();
     }
 }
