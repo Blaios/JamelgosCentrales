@@ -40,11 +40,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_main_page);
 
         backgroundService = new Intent(this, SyncList.class);
-
         activateBT();
+        //startService(backgroundService);
 
         Button alarm = findViewById(R.id.alarm);
         alarm.setOnClickListener(v -> {
+            stopService(backgroundService);
             startService(backgroundService);
         }
         );

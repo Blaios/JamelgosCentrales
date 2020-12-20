@@ -49,7 +49,9 @@ public class APIMethods {
                 }
                 List<Infected> infecteds = response.body();
                 for(Infected i: infecteds) {
-                    if (localDB.read(db, i.getMAC())) System.out.println("riing!");
+                    if (localDB.read(db, i.getMAC())) {
+                        System.out.println("riing!");
+                    }
                 }
             }
 

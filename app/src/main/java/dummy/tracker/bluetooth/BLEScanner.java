@@ -41,7 +41,8 @@ public class BLEScanner {
 
     public void onScanResult(ScanResult bleScanResult) {
         int rssi = bleScanResult.getRssi();
-        devices.add(bleScanResult.getBleDevice());
+        //if(rssi >= -51)
+            devices.add(bleScanResult.getBleDevice());
         /*
         BluetoothClass bluetoothClass = bleScanResult.getBleDevice().getBluetoothDevice().getBluetoothClass();
         //if(bluetoothClass.getDeviceClass() == BluetoothClass.Device.PHONE_SMART) {
