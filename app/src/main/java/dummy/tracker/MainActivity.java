@@ -1,5 +1,6 @@
 package dummy.tracker;
 
+<<<<<<< Updated upstream
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -22,6 +23,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import java.util.Set;
+=======
+import android.content.Context;
+import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import dummy.tracker.api.APIMethods;
+import dummy.tracker.bluetooth.BTInit;
+>>>>>>> Stashed changes
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -66,9 +82,22 @@ public class MainActivity extends AppCompatActivity {
 
 // ...
 
+<<<<<<< Updated upstream
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, DISCOVERABLE_DURATION);
         startActivityForResult(discoverableIntent, REQUEST_DISCOVERABLE_BT);
+=======
+        Button alarm = findViewById(R.id.alarm);
+        alarm.setOnClickListener(v -> {
+            startService(backgroundService);
+        }
+        );
+        WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        String address = info.getMacAddress();
+
+        Log.i("MAC", address);
+>>>>>>> Stashed changes
 
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
