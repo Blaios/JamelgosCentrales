@@ -72,18 +72,14 @@ public class SyncList extends Service {
             }
         }.start();
 
+        // tiempos prueba
         CountDownTimer c2 = new CountDownTimer(20000, 1000) {
-            private ArrayList<String> infected;
-
             @Override
             public void onTick(long millisUntilFinished) {}
 
             @Override
             public void onFinish() {
-                infected = APIMethods.getInstance().getInfected();
-                for(String i:infected) {
-                    if(localDB.read(db, i)) System.out.println("riiing!!!");
-                }
+                APIMethods.getInstance().getInfected(localDB, db);
                 this.start();
             }
         }.start();

@@ -1,6 +1,7 @@
 package dummy.tracker.api;
 
 import android.bluetooth.BluetoothAdapter;
+import android.database.sqlite.SQLiteDatabase;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -8,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dummy.tracker.bd.LocalDB;
 import dummy.tracker.bluetooth.BLEScanner;
 import dummy.tracker.objects.Infected;
 import retrofit2.Call;
@@ -36,9 +38,7 @@ public class APIMethods {
         return instance;
     }
 
-    public ArrayList<String> getInfected() {
-
-        ArrayList<String> macs = new ArrayList<>();
+    public void getInfected(LocalDB localDB, SQLiteDatabase db) {
         Call<List<Infected>> call = jsonPlaceHolderApi.getInfected();
             call.enqueue(new Callback<List<Infected>>() {
             @Override
@@ -49,9 +49,8 @@ public class APIMethods {
                 }
                 List<Infected> infecteds = response.body();
                 for(Infected i: infecteds) {
-                    macs.add(i.getMAC());
+                    if (localDB.read(db, i.getMAC())) System.out.println("riing!");
                 }
-                System.out.println("finished");
             }
 
             @Override
@@ -59,7 +58,6 @@ public class APIMethods {
                 System.out.println(t.getMessage());
             }
         });
-        return macs;
     }
 
     public void postInfected(String s) {
