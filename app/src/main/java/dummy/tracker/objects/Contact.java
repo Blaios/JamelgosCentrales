@@ -9,10 +9,13 @@ public class Contact {
         this.noticedTime = noticedTime;
     }
 
+    public Contact(String MAC) {
+        this.MAC = MAC;
+    }
+
     public String getMAC() {
         return MAC;
     }
-
 
     public String getNoticedTime() {
         return noticedTime;

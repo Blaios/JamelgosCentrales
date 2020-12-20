@@ -47,6 +47,26 @@
             android:layout_height="wrap_content"
             android:text="stop" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="introduce tu mac que para nada la usaremos para fines maliciosos"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/mac"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="MAC"
+            android:inputType="textPersonName"
+            android:textAlignment="center" />
+
         <Button
             android:id="@+id/apestao"
             android:layout_width="wrap_content"
