@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
 import android.widget.Button;
 
 import com.polidea.rxandroidble2.RxBleDevice;
@@ -15,10 +14,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import dummy.tracker.api.JsonPlaceHolderApi;
 import dummy.tracker.bd.LocalDB;
 import dummy.tracker.bluetooth.BLEScanner;
 import dummy.tracker.bluetooth.BTInit;
+import dummy.tracker.objects.Infected;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,6 +71,36 @@ public class MainActivity extends AppCompatActivity {
 
         Button stop = findViewById(R.id.stop);
         stop.setOnClickListener(v -> stopService(backgroundService));
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://dummytracker.herokuapp.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        Call<List<Infected>> call = jsonPlaceHolderApi.getInfected();
+
+        call.enqueue(new Callback<List<Infected>>() {
+            @Override
+            public void onResponse(Call<List<Infected>> call, Response<List<Infected>> response) {
+                if(!response.isSuccessful()) {
+                    System.out.println(response.code());
+                    return;
+                }
+                List<Infected> infecteds = response.body();
+                for(Infected i: infecteds) {
+                    String c = "";
+                    c += "MAC: " + i.getMAC() + "\n";
+                    c += "Date: " + i.getNoticedTime() + "\n";
+                    System.out.println(c);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Infected>> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
     }
 
     @Override
