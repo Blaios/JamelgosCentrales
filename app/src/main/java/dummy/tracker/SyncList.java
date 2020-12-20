@@ -4,15 +4,33 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.polidea.rxandroidble2.RxBleDevice;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.EventListener;
+
+import dummy.tracker.api.APIMethods;
+import dummy.tracker.bd.LocalDB;
+import dummy.tracker.bluetooth.BLEScanner;
+
 import static dummy.tracker.App.CHANNEL_ID;
+import static dummy.tracker.Encrypt.getMD5;
 
 public class SyncList extends Service {
+
+    private LocalDB localDB;
+    private SQLiteDatabase db;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -31,13 +49,41 @@ public class SyncList extends Service {
                 setContentIntent(pendingIntent).build();
         startForeground(1, not);
 
-        CountDownTimer c = new CountDownTimer(5000, 1000) {
+        BLEScanner bleScanner = BLEScanner.getInstance();
+        bleScanner.setContext(getBaseContext());
+        localDB = new LocalDB(getBaseContext(), "contacts", null);
+        db = localDB.getWritableDatabase();
+
+        CountDownTimer c1 = new CountDownTimer(15000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(millisUntilFinished > 14100) bleScanner.scan();
+            }
+
+            @Override
+            public void onFinish() {
+                Date date = Calendar.getInstance().getTime();
+                for(RxBleDevice d:bleScanner.getDevices()) {
+                    String mac = getMD5(d.getMacAddress());
+                    System.out.println("MAC: " + mac + " ||| Date: " + new SimpleDateFormat("yyyy/MM/dd").format(date));
+                    localDB.insert(db, mac, new SimpleDateFormat("yyyy/MM/dd").format(date));
+                }
+                this.start();
+            }
+        }.start();
+
+        CountDownTimer c2 = new CountDownTimer(20000, 1000) {
+            private ArrayList<String> infected;
+
             @Override
             public void onTick(long millisUntilFinished) {}
 
             @Override
             public void onFinish() {
-                System.out.println("alarm");
+                infected = APIMethods.getInstance().getInfected();
+                for(String i:infected) {
+                    if(localDB.read(db, i)) System.out.println("riiing!!!");
+                }
                 this.start();
             }
         }.start();

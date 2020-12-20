@@ -41,30 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         backgroundService = new Intent(this, SyncList.class);
 
-        Button activateBT = findViewById(R.id.activateBT);
-        activateBT.setOnClickListener(v -> {
-            Intent i = new Intent(v.getContext(), BTInit.class);
-            startActivity(i);
-        });
-
-        Button scanBLE = findViewById(R.id.scan);
-        scanBLE.setOnClickListener(v -> {
-            BLEScanner bleScanner = BLEScanner.getInstance();
-            bleScanner.setContext(this);
-            bleScanner.scan();
-        });
-
-        Button insertDevices = findViewById(R.id.insert);
-        insertDevices.setOnClickListener(v -> {
-            BLEScanner bleScanner = BLEScanner.getInstance();
-            ArrayList<RxBleDevice> devices = bleScanner.getDevices();
-            LocalDB localDB = new LocalDB(this, "contacts", null, 1);
-            SQLiteDatabase db = localDB.getWritableDatabase();
-            for(RxBleDevice d:devices) {
-                Date newDate = Calendar.getInstance().getTime();
-                localDB.insert(db, d.getMacAddress(), new SimpleDateFormat("yyyy/MM/dd").format(newDate));
-            }
-        });
+        activateBT();
 
         Button alarm = findViewById(R.id.alarm);
         alarm.setOnClickListener(v -> {
@@ -82,5 +59,10 @@ public class MainActivity extends AppCompatActivity {
             TextView mac = findViewById(R.id.mac);
             apiMethods.postInfected(mac.getText().toString());
         });
+    }
+
+    public void activateBT() {
+        Intent i = new Intent(this, BTInit.class);
+        startActivity(i);
     }
 }

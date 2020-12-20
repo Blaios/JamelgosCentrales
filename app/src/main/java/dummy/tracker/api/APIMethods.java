@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import dummy.tracker.bluetooth.BLEScanner;
@@ -14,6 +15,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static dummy.tracker.Encrypt.getMD5;
 
 public class APIMethods {
     private static APIMethods instance;
@@ -33,7 +36,9 @@ public class APIMethods {
         return instance;
     }
 
-    public void getInfected() {
+    public ArrayList<String> getInfected() {
+
+        ArrayList<String> macs = new ArrayList<>();
         Call<List<Infected>> call = jsonPlaceHolderApi.getInfected();
             call.enqueue(new Callback<List<Infected>>() {
             @Override
@@ -44,11 +49,9 @@ public class APIMethods {
                 }
                 List<Infected> infecteds = response.body();
                 for(Infected i: infecteds) {
-                    String c = "";
-                    c += "MAC: " + i.getMAC() + "\n";
-                    c += "Date: " + i.getNoticedTime() + "\n";
-                    System.out.println(c);
+                    macs.add(i.getMAC());
                 }
+                System.out.println("finished");
             }
 
             @Override
@@ -56,6 +59,7 @@ public class APIMethods {
                 System.out.println(t.getMessage());
             }
         });
+        return macs;
     }
 
     public void postInfected(String s) {
@@ -79,22 +83,4 @@ public class APIMethods {
             }
         });
     }
-
-    public static String getMD5(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-            BigInteger number = new BigInteger(1, messageDigest);
-            String hashtext = number.toString(16);
-
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        }
-        catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }

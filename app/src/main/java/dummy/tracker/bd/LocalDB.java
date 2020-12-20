@@ -23,14 +23,14 @@ public class LocalDB extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + table_name + "(" +
-            column1 + " TEXT PRIMARY KEY," +
+            column1 + " TEXT PRIMARY KEY, " +
             column2 + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + table_name;
 
-    public LocalDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public LocalDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory) {
+        super(context, name, factory, 1);
     }
 
     @Override
@@ -59,6 +59,10 @@ public class LocalDB extends SQLiteOpenHelper {
             db.update(table_name, values, where, args);
         }
     }
+
+    //public void delete(SQLiteDatabase db) {
+    //    db.execSQL(SQL_DELETE_ENTRIES);
+    //}
 
     public boolean read(SQLiteDatabase db, String mac) {
         String[] projection = {column1, column2};
